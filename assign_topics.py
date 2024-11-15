@@ -4,9 +4,11 @@ import random
 import re
 
 # Configuration
-ACCESS_TOKEN = os.getenv("GITHUB_ACCESS_TOKEN")  # Retrieve from GitHub Actions secrets
+ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")  # Retrieve from GitHub Actions secrets
 if not ACCESS_TOKEN:
-    raise ValueError("GITHUB_ACCESS_TOKEN is not set!")
+    print("Environment variable ACCESS_TOKEN is not set.")
+    print("Ensure the secret is defined in GitHub Actions and passed correctly.")
+    raise ValueError("ACCESS_TOKEN is not set!")
 
 # GitHub API headers
 HEADERS = {
