@@ -10,8 +10,7 @@ jobs:
   assign-topics:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Required for assigning topics
-      metadata: write  # Required for repo metadata
+      contents: write  # Grants necessary permissions to modify repository contents
 
     steps:
       # Step 1: Checkout the repository
