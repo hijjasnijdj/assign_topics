@@ -26,14 +26,24 @@ def sanitize_topic(topic):
     return topic
 
 def get_repositories():
-    """Fetches the list of repositories for the authenticated user."""
+    """Fetches the list of repositories for the authenticated user, handling pagination."""
     url = "https://api.github.com/user/repos"
-    response = requests.get(url, headers=HEADERS)
-    if response.status_code == 200:
-        return [repo["full_name"] for repo in response.json()]
-    else:
-        print(f"Failed to fetch repositories: {response.status_code} {response.text}")
-        return []
+    repositories = []
+    page = 1
+
+    while True:
+        response = requests.get(url, headers=HEADERS, params={"per_page": 100, "page": page})
+        if response.status_code == 200:
+            repos = response.json()
+            if not repos:  # Break if no more repositories
+                break
+            repositories.extend(repo["full_name"] for repo in repos)
+            page += 1
+        else:
+            print(f"Failed to fetch repositories: {response.status_code} {response.text}")
+            break
+
+    return repositories
 
 def get_repo_topics(full_repo_name):
     """Fetches the current topics of a repository."""
