@@ -3,15 +3,15 @@ name: Assign Topics to Repos
 on:
   push:
     branches:
-      - main  # Trigger when changes are pushed to the 'main' branch
-  workflow_dispatch:  # Allows manual trigger
-  # Uncomment the following lines to enable a schedule (e.g., daily at midnight)
-  # schedule:
-  #   - cron: '0 0 * * *'
+      - main
+  workflow_dispatch:
 
 jobs:
   assign-topics:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required for assigning topics
+      metadata: write  # Required for repo metadata
 
     steps:
       # Step 1: Checkout the repository
@@ -30,9 +30,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      # Step 4: Run the Python script
+      # Step 4: Debugging the token
+      - name: Debug Token
+        run: echo "Token length: ${#GITHUB_ACCESS_TOKEN}"
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
+
+      # Step 5: Run the Python script
       - name: Run assign topics script
         env:
-          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}  # Use the GitHub secret
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
         run: |
-          python assign_topics.py  # Run your Python script
+          python assign_topics.py
