@@ -30,16 +30,6 @@ def get_repositories():
         print(f"Failed to fetch repositories: {response.status_code} {response.text}")
         return []
 
-def get_repo_topics(full_repo_name):
-    """Fetches the current topics of a repository."""
-    url = f"https://api.github.com/repos/{full_repo_name}/topics"
-    response = requests.get(url, headers=HEADERS)
-    if response.status_code == 200:
-        return response.json().get("names", [])
-    else:
-        print(f"Failed to fetch topics for {full_repo_name}: {response.status_code} {response.text}")
-        return []
-
 def get_topics_from_file():
     """Reads and sanitizes topics from the topics.txt file."""
     with open(TOPICS_FILE, "r") as file:
@@ -54,13 +44,6 @@ def find_similar_topics(repo_name, topics):
 def assign_topics_to_repo(full_repo_name, topics):
     """Assigns 10–14 sanitized topics to a repository."""
     repo_name = full_repo_name.split("/")[-1]
-    current_topics = get_repo_topics(full_repo_name)
-
-    # Skip repositories that already have topics assigned
-    if current_topics:
-        print(f"Skipping {full_repo_name}: Topics already assigned ({current_topics})")
-        return
-
     similar_topics = find_similar_topics(repo_name, topics)
     
     if len(similar_topics) < 10:
